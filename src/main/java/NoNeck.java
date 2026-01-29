@@ -22,14 +22,14 @@ public class NoNeck {
                 bai = true;
                 System.out.println("Astalavista baby");
             }
-            else if (line.equals("repeat")) {
+            else if (line.equals("list")) {
                 for (int j = 0; storedLine[j] != null; j++) {
                     System.out.println(storedLine[j]);
                 }
             }
             else {
                 storedLine[i] = i+1 + ") " + line;
-                System.out.println(line);
+                System.out.println("added: " + line);
                 i++;
             }
         }
