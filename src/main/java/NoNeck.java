@@ -42,44 +42,82 @@ public class NoNeck {
 
             else if (line.trim().startsWith("todo")) {
                 int pos = line.indexOf("todo") + 4;
-                String rest = line.substring(pos).trim();
-                ToDo t = new ToDo(rest);
-                tasks[i] = t;
-                i++;
+                try {
+                    String rest = line.substring(pos).trim();
 
-                System.out.println("added Todo:");
-                System.out.println(rest);
+                    if (rest.isEmpty()) {
+                        throw new IllegalArgumentException("The description of a todo cannot be empty.");
+                    }
+
+                    ToDo t = new ToDo(rest);
+                    tasks[i] = t;
+                    i++;
+
+                    System.out.println("added Todo:");
+                    System.out.println(rest);
+                }
+                catch (IllegalArgumentException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
+
             }
             else if (line.trim().startsWith("deadline")) {
-                int pos = line.indexOf("deadline") + 8;
-                String rest = line.substring(pos).trim();
-                String[] parts = rest.split("/by");
+                try {
+                    int pos = line.indexOf("deadline") + 8;
+                    String rest = line.substring(pos).trim();
+                    String[] parts = rest.split("/by");
 
-                String description = parts[0].trim();
-                String by = parts[1].trim();
+                    String description = parts[0].trim();
 
-                Deadline t = new Deadline(description, by);
-                tasks[i] = t;
-                i++;
+                    if (description.isEmpty()) {
+                        throw new IllegalArgumentException("The description of a deadline cannot be empty.");
+                    }
 
-                System.out.println("added deadline:");
-                System.out.println(rest);
+                    if (parts.length < 2) {
+                        throw new IllegalArgumentException("Deadline must have a /by time.");
+                    }
+
+                    String by = parts[1].trim();
+
+
+                    Deadline t = new Deadline(description, by);
+                    tasks[i] = t;
+                    i++;
+
+                    System.out.println("added deadline:");
+                    System.out.println(rest);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
             }
             else if (line.trim().startsWith("event")) {
-                int pos = line.indexOf("event") + 5;
-                String rest = line.substring(pos).trim();
-                String[] parts = rest.split("/from|/to");
+                try {
+                    int pos = line.indexOf("event") + 5;
+                    String rest = line.substring(pos).trim();
+                    String[] parts = rest.split("/from|/to");
 
-                String description = parts[0].trim();
-                String from = parts[1].trim();
-                String to = parts[2].trim();
+                    String description = parts[0].trim();
 
-                Events t = new Events(description, from, to);
-                tasks[i] = t;
-                System.out.println("added Event:");
-                System.out.println(rest);
+                    if (description.isEmpty()) {
+                        throw new IllegalArgumentException("The description of a deadline cannot be empty.");
+                    }
 
-                i++;
+                    if (parts.length < 3) {
+                        throw new IllegalArgumentException("Event must have to and/or from time.");
+                    }
+
+                    String from = parts[1].trim();
+                    String to = parts[2].trim();
+
+                    Events t = new Events(description, from, to);
+                    tasks[i] = t;
+                    System.out.println("added Event:");
+                    System.out.println(rest);
+
+                    i++;
+                } catch (IllegalArgumentException e){
+                    System.out.println("Error: " + e.getMessage());
+                }
             }
 
             else if (line.equals("list")) {
@@ -89,7 +127,7 @@ public class NoNeck {
                 }
             }
             else {
-                    System.out.println(line);
+                System.out.println("Error: I don't understand \"" + line + "\"");
             }
         }
     }
