@@ -1,10 +1,15 @@
+package Duke.ui;
+
+import Duke.task.Deadline;
+import Duke.task.Events;
+import Duke.task.Task;
+import Duke.task.ToDo;
+
 import java.util.Scanner;
-import java.util.Arrays;
-import java.util.ArrayList;
 
 public class NoNeck {
     public static void main(String[] args) {
-        String logo = "NoNeck";
+        String logo = "Duke";
         String line;
         int i = 0;
 
@@ -74,7 +79,7 @@ public class NoNeck {
                     }
 
                     if (parts.length < 2) {
-                        throw new IllegalArgumentException("Deadline must have a /by time.");
+                        throw new IllegalArgumentException("Duke.task.Deadline must have a /by time.");
                     }
 
                     String by = parts[1].trim();
@@ -125,6 +130,11 @@ public class NoNeck {
                     System.out.print((j+1) + ")");
                     System.out.println(tasks[j]);
                 }
+            }
+            else if (line.equals("bai")) {
+                System.out.println("Astalavista Baby");
+                return;
+
             }
             else {
                 System.out.println("Error: I don't understand \"" + line + "\"");
