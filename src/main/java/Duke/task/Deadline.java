@@ -8,8 +8,15 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    @Override
     public String toString() {
         return "[D][" + Status() + "] "
                 + description + " (by: " + by + ")";
+    }
+
+    @Override
+    public String toFileFormat() {
+        String status = isDone ? "1" : "0";
+        return "D | " + status + " | " + description + " | " + by;
     }
 }

@@ -4,7 +4,9 @@ import Duke.task.Deadline;
 import Duke.task.Events;
 import Duke.task.Task;
 import Duke.task.ToDo;
+import Duke.storage.Storage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,7 +16,14 @@ public class NoNeck {
         String line;
         int i = 0;
 
-        ArrayList<Task> tasks = new ArrayList<>();
+        Storage storage = new Storage("data/duke.txt");
+        ArrayList<Task> tasks;
+
+        try {
+            tasks = storage.load();
+        } catch (IOException e) {
+            tasks = new ArrayList<>();
+        }
 
         System.out.println("Hello i'm " + logo);
         System.out.println("what can i do for you");
@@ -57,12 +66,13 @@ public class NoNeck {
 
                     ToDo t = new ToDo(rest);
                     tasks.add(t);
+                    Storage.save(tasks);
                     i++;
 
                     System.out.println("added Todo:");
                     System.out.println(rest);
                 }
-                catch (IllegalArgumentException e) {
+                catch (IllegalArgumentException | IOException e) {
                     System.out.println("Error: " + e.getMessage());
                 }
 
@@ -71,7 +81,7 @@ public class NoNeck {
                 try {
                     int pos = line.indexOf("deadline") + 8;
                     String rest = line.substring(pos).trim();
-                    String[] parts = rest.split("/by");
+                    String[] parts = rest.split("by");
 
                     String description = parts[0].trim();
 
@@ -88,11 +98,12 @@ public class NoNeck {
 
                     Deadline t = new Deadline(description, by);
                     tasks.add(t);
+                    Storage.save(tasks);
                     i++;
 
                     System.out.println("added deadline:");
                     System.out.println(rest);
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException | IOException e) {
                     System.out.println("Error: " + e.getMessage());
                 }
             }
@@ -100,7 +111,7 @@ public class NoNeck {
                 try {
                     int pos = line.indexOf("event") + 5;
                     String rest = line.substring(pos).trim();
-                    String[] parts = rest.split("/from|/to");
+                    String[] parts = rest.split("from|to");
 
                     String description = parts[0].trim();
 
@@ -117,11 +128,13 @@ public class NoNeck {
 
                     Events t = new Events(description, from, to);
                     tasks.add(t);
+                    Storage.save(tasks);
+
                     System.out.println("added Event:");
                     System.out.println(rest);
 
                     i++;
-                } catch (IllegalArgumentException e){
+                } catch (IllegalArgumentException | IOException e){
                     System.out.println("Error: " + e.getMessage());
                 }
             }
@@ -137,6 +150,7 @@ public class NoNeck {
                     int num = Integer.parseInt(line.substring(6).trim());
 
                     Task removed = tasks.remove(num - 1);
+                    Storage.save(tasks);
 
                     System.out.println("Noted. I've removed this task:");
                     System.out.println(removed);
@@ -145,6 +159,8 @@ public class NoNeck {
                     System.out.println("Error: delete needs a task number (e.g. delete 3)");
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("Error: task number out of range");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
 
