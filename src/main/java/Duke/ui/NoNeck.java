@@ -5,15 +5,16 @@ import Duke.task.Events;
 import Duke.task.Task;
 import Duke.task.ToDo;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class NoNeck {
     public static void main(String[] args) {
-        String logo = "Duke";
+        String logo = "NoNeck";
         String line;
         int i = 0;
 
-        Task[] tasks = new Task[100];
+        ArrayList<Task> tasks = new ArrayList<>();
 
         System.out.println("Hello i'm " + logo);
         System.out.println("what can i do for you");
@@ -34,7 +35,7 @@ public class NoNeck {
                 String rest = line.substring(pos).trim();
                 int num = Integer.parseInt(rest);
                 System.out.println("marked as done");
-                tasks[num - 1].mark();
+                tasks.get(num - 1).mark();
             }
 
             else if (line.trim().startsWith("unmark")) {
@@ -42,7 +43,7 @@ public class NoNeck {
                 String rest = line.substring(pos).trim();
                 int num = Integer.parseInt(rest);
                 System.out.println("not done yet");
-                tasks[num - 1].unmark();
+                tasks.get(num - 1).unmark();
             }
 
             else if (line.trim().startsWith("todo")) {
@@ -55,7 +56,7 @@ public class NoNeck {
                     }
 
                     ToDo t = new ToDo(rest);
-                    tasks[i] = t;
+                    tasks.add(t);
                     i++;
 
                     System.out.println("added Todo:");
@@ -86,7 +87,7 @@ public class NoNeck {
 
 
                     Deadline t = new Deadline(description, by);
-                    tasks[i] = t;
+                    tasks.add(t);
                     i++;
 
                     System.out.println("added deadline:");
@@ -115,7 +116,7 @@ public class NoNeck {
                     String to = parts[2].trim();
 
                     Events t = new Events(description, from, to);
-                    tasks[i] = t;
+                    tasks.add(t);
                     System.out.println("added Event:");
                     System.out.println(rest);
 
@@ -126,11 +127,27 @@ public class NoNeck {
             }
 
             else if (line.equals("list")) {
-                for (int j = 0; tasks[j] != null; j++) {
+                for (int j = 0; j < tasks.size(); j++) {
                     System.out.print((j+1) + ")");
-                    System.out.println(tasks[j]);
+                    System.out.println(tasks.get(j));
                 }
             }
+            else if (line.trim().startsWith("delete")) {
+                try {
+                    int num = Integer.parseInt(line.substring(6).trim());
+
+                    Task removed = tasks.remove(num - 1);
+
+                    System.out.println("Noted. I've removed this task:");
+                    System.out.println(removed);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Error: delete needs a task number (e.g. delete 3)");
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("Error: task number out of range");
+                }
+            }
+
             else if (line.equals("bai")) {
                 System.out.println("Astalavista Baby");
                 return;

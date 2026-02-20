@@ -6,7 +6,6 @@ public class ToDo extends Task {
         super(description);
     }
 
-
     public String toString() {
         return "[T][" + Status() + "] " + description;
     }
