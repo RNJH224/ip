@@ -1,177 +1,55 @@
 package Duke.ui;
 
-import Duke.task.Deadline;
-import Duke.task.Events;
-import Duke.task.Task;
-import Duke.task.ToDo;
+import Duke.command.Command;
+import Duke.parser.Parser;
 import Duke.storage.Storage;
+import Duke.tasklist.Tasklist;
+import Duke.ui.Ui;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 public class NoNeck {
-    public static void main(String[] args) {
-        String logo = "NoNeck";
-        String line;
-        int i = 0;
 
-        Storage storage = new Storage("data/duke.txt");
-        ArrayList<Task> tasks;
+    private final Storage storage;
+    private final Tasklist tasks;
+    private final Ui ui;
 
+    public NoNeck(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+
+        Tasklist loadedTasks;
         try {
-            tasks = storage.load();
+            loadedTasks = new Tasklist(storage.load());
         } catch (IOException e) {
-            tasks = new ArrayList<>();
+            ui.showLoadingError();
+            loadedTasks = new Tasklist();
         }
 
-        System.out.println("Hello i'm " + logo);
-        System.out.println("what can i do for you");
+        tasks = loadedTasks;
+    }
 
-        boolean bai = false;
+    public void run() {
+        ui.showWelcome("NoNeck");
 
-        while (!bai) {
+        boolean isExit = false;
 
-            Scanner sc = new Scanner(System.in);
-            line = sc.nextLine();
+        while (!isExit) {
+            try {
+                String fullCommand = ui.readCommand();
 
-            if (line.equals("bye")) {
-                bai = true;
-                System.out.println("Astalavista baby");
-            }
-            else if (line.trim().startsWith("mark")) {
-                int pos = line.indexOf("mark")+4;
-                String rest = line.substring(pos).trim();
-                int num = Integer.parseInt(rest);
-                System.out.println("marked as done");
-                tasks.get(num - 1).mark();
-            }
+                Command c = Parser.parse(fullCommand);
+                c.execute(tasks, ui, storage);
 
-            else if (line.trim().startsWith("unmark")) {
-                int pos = line.indexOf("unmark")+6;
-                String rest = line.substring(pos).trim();
-                int num = Integer.parseInt(rest);
-                System.out.println("not done yet");
-                tasks.get(num - 1).unmark();
-            }
+                isExit = c.isExit();
 
-            else if (line.trim().startsWith("todo")) {
-                int pos = line.indexOf("todo") + 4;
-                try {
-                    String rest = line.substring(pos).trim();
-
-                    if (rest.isEmpty()) {
-                        throw new IllegalArgumentException("The description of a todo cannot be empty.");
-                    }
-
-                    ToDo t = new ToDo(rest);
-                    tasks.add(t);
-                    Storage.save(tasks);
-                    i++;
-
-                    System.out.println("added Todo:");
-                    System.out.println(rest);
-                }
-                catch (IllegalArgumentException | IOException e) {
-                    System.out.println("Error: " + e.getMessage());
-                }
-
-            }
-            else if (line.trim().startsWith("deadline")) {
-                try {
-                    int pos = line.indexOf("deadline") + 8;
-                    String rest = line.substring(pos).trim();
-                    String[] parts = rest.split("by");
-
-                    String description = parts[0].trim();
-
-                    if (description.isEmpty()) {
-                        throw new IllegalArgumentException("The description of a deadline cannot be empty.");
-                    }
-
-                    if (parts.length < 2) {
-                        throw new IllegalArgumentException("Duke.task.Deadline must have a /by time.");
-                    }
-
-                    String by = parts[1].trim();
-
-
-                    Deadline t = new Deadline(description, by);
-                    tasks.add(t);
-                    Storage.save(tasks);
-                    i++;
-
-                    System.out.println("added deadline:");
-                    System.out.println(rest);
-                } catch (IllegalArgumentException | IOException e) {
-                    System.out.println("Error: " + e.getMessage());
-                }
-            }
-            else if (line.trim().startsWith("event")) {
-                try {
-                    int pos = line.indexOf("event") + 5;
-                    String rest = line.substring(pos).trim();
-                    String[] parts = rest.split("from|to");
-
-                    String description = parts[0].trim();
-
-                    if (description.isEmpty()) {
-                        throw new IllegalArgumentException("The description of a deadline cannot be empty.");
-                    }
-
-                    if (parts.length < 3) {
-                        throw new IllegalArgumentException("Event must have to and/or from time.");
-                    }
-
-                    String from = parts[1].trim();
-                    String to = parts[2].trim();
-
-                    Events t = new Events(description, from, to);
-                    tasks.add(t);
-                    Storage.save(tasks);
-
-                    System.out.println("added Event:");
-                    System.out.println(rest);
-
-                    i++;
-                } catch (IllegalArgumentException | IOException e){
-                    System.out.println("Error: " + e.getMessage());
-                }
-            }
-
-            else if (line.equals("list")) {
-                for (int j = 0; j < tasks.size(); j++) {
-                    System.out.print((j+1) + ")");
-                    System.out.println(tasks.get(j));
-                }
-            }
-            else if (line.trim().startsWith("delete")) {
-                try {
-                    int num = Integer.parseInt(line.substring(6).trim());
-
-                    Task removed = tasks.remove(num - 1);
-                    Storage.save(tasks);
-
-                    System.out.println("Noted. I've removed this task:");
-                    System.out.println(removed);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                } catch (NumberFormatException e) {
-                    System.out.println("Error: delete needs a task number (e.g. delete 3)");
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.println("Error: task number out of range");
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            else if (line.equals("bai")) {
-                System.out.println("Astalavista Baby");
-                return;
-
-            }
-            else {
-                System.out.println("Error: I don't understand \"" + line + "\"");
+            } catch (IOException e) {
+                ui.showError(e.getMessage());
             }
         }
+    }
+
+    public static void main(String[] args) {
+        new NoNeck("data/duke.txt").run();
     }
 }

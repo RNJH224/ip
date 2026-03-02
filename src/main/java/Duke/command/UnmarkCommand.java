@@ -1,0 +1,30 @@
+package Duke.command;
+
+
+import Duke.storage.Storage;
+import Duke.task.Task;
+import Duke.tasklist.Tasklist;
+import Duke.ui.Ui;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class UnmarkCommand extends Command {
+    private final int index; // 0-based
+
+    public UnmarkCommand(String args) throws IOException {
+        try {
+            this.index = Integer.parseInt(args.trim()) - 1;
+        } catch (NumberFormatException e) {
+            throw new IOException("unmark requires a task number. Example: unmark 2");
+        }
+    }
+
+    @Override
+    public void execute(Tasklist tasks, Ui ui, Storage storage) throws IOException {
+        tasks.get(index).unmark();
+        Storage.save((ArrayList<Task>) tasks.getTasks());
+        System.out.println("Nice! I've unmarked this task as done:");
+        System.out.println("  " + tasks.get(index));
+    }
+}
