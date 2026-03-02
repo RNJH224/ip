@@ -2,6 +2,7 @@ package Duke.storage;
 
 import Duke.task.*;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -42,6 +43,7 @@ public class Storage {
                 task = new ToDo(description);
                 break;
             case "D":
+                LocalDateTime by = LocalDateTime.parse(parts[3].trim());
                 task = new Deadline(description, parts[3]);
                 break;
             case "E":

@@ -26,4 +26,8 @@ public class Task {
         return "T | " + status + " | " + description;
     }
 
+    @Override
+    public String toString() {
+        return "[" + (isDone ? "X" : " ") + "] " + description;
+    }
 }
