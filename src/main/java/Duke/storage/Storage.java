@@ -25,43 +25,64 @@ public class Storage {
 
         ArrayList<Task> tasks = new ArrayList<>();
 
-        Scanner sc = new Scanner(file);
+        try (Scanner sc = new Scanner(file)) {
 
-        while (sc.hasNextLine()) {
-            String line = sc.nextLine();
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
 
-            String[] parts = line.split(" \\| ");
+                String[] parts = line.split(" \\| ");
 
-            String type = parts[0];
-            boolean isDone = parts[1].equals("1");
-            String description = parts[2];
+                if (parts.length != 3 && parts.length != 4 && parts.length != 5) {
+                    throw new IOException("Corrupted format: wrong number of fields");
+                }
 
-            Task task;
+                String type = parts[0];
+                boolean isDone = parts[1].equals("1");
+                String description = parts[2];
 
-            switch (type) {
-            case "T":
-                task = new ToDo(description);
-                break;
-            case "D":
-                LocalDateTime by = LocalDateTime.parse(parts[3].trim());
-                task = new Deadline(description, parts[3]);
-                break;
-            case "E":
-                task = new Events(description, parts[3], parts[4]);
-                break;
-            default:
-                continue;
+                if (!type.equals("T") && !type.equals("D") && !type.equals("E")) {
+                    throw new IOException("Corrupted format: invalid task type");
+                }
+
+                if (!parts[1].equals("0") && !parts[1].equals("1")) {
+                    throw new IOException("Corrupted format: invalid status");
+                }
+
+                if (description.trim().isEmpty()) {
+                    throw new IOException("Corrupted format: empty description");
+                }
+
+                Task task;
+
+                switch (type) {
+                case "T":
+                    task = new ToDo(description);
+                    break;
+                case "D":
+                    LocalDateTime by = LocalDateTime.parse(parts[3].trim());
+                    task = new Deadline(description, parts[3]);
+                    break;
+                case "E":
+                    task = new Events(description, parts[3], parts[4]);
+                    break;
+                default:
+                    continue;
+                }
+
+                if (isDone) {
+                    task.mark();
+                }
+
+                tasks.add(task);
             }
 
-            if (isDone) {
-                task.mark();
-            }
-
-            tasks.add(task);
+            sc.close();
+            return tasks;
+        } catch (Exception e) {
+            file.delete();
+            file.createNewFile();
+            return new ArrayList<>();
         }
-
-        sc.close();
-        return tasks;
     }
 
     public static void save(ArrayList<Task> tasks) throws IOException {
