@@ -6,13 +6,29 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Handles loading tasks from disk and saving tasks back to disk.
+ * Tasks are stored in a text file where each line represents one task in a pipe-delimited format.
+ */
 public class Storage {
     private String filePath;
 
+    /**
+     * Creates a Storage object that reads from and writes to the given file path.
+     *
+     * @param filePath Path to the save file.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads tasks from the save file.
+     * If the folder or file does not exist, it will be created and an empty task list is returned.
+     *
+     * @return List of loaded tasks.
+     * @throws IOException If the file cannot be read or the format is corrupted.
+     */
     public ArrayList<Task> load() throws IOException {
 
         File file = new File(filePath);
@@ -64,6 +80,13 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the given task list to the default save file.
+     * Each task is saved on its own line using
+     *
+     * @param tasks List of tasks to save.
+     * @throws IOException If the file cannot be created or written to.
+     */
     public static void save(ArrayList<Task> tasks) throws IOException {
         File file = new File("data/duke.txt");
 
