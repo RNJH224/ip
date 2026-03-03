@@ -19,7 +19,7 @@ public class EventCommand extends Command {
             throw new IOException("The description of a Event cannot be empty.");
         }
 
-        String[] parts = args.split("from|to");
+        String[] parts = args.split("/from|/to");
         if (parts.length < 3) {
             throw new IOException("Event must have to and/or from time.");
         }
