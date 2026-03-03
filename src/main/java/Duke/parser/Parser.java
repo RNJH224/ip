@@ -6,7 +6,13 @@ import Duke.task.*;
 import java.io.IOException;
 
 public class Parser {
-
+    /**
+     * checks the command word being used and parse it to the proper command
+     *
+     * @param fullCommand
+     * @return
+     * @throws IOException
+     */
     public static Command parse(String fullCommand) throws IOException {
         String input = fullCommand.trim();
         if (input.isEmpty()) throw new IOException("Please type a command.");
@@ -32,6 +38,8 @@ public class Parser {
             return new DeadlineCommand(args);
         case "event":
             return new EventCommand(args);
+        case "find":
+            return new FindCommand(args);
         default:
             throw new IOException("I don't know what that means.");
         }
