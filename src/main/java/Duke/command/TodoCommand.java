@@ -9,6 +9,11 @@ import Duke.ui.Ui;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Represents a command that creates a new ToDo task.
+ * Expected input format:
+ * todo <description>
+ */
 public class TodoCommand extends Command {
     private final String description;
 

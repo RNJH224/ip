@@ -9,6 +9,11 @@ import Duke.ui.Ui;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Represents a command that creates a new Event task.
+ * Expected input format:
+ * event <description> from <date> to <date>
+ */
 public class EventCommand extends Command {
     private final String description;
     private final String from;

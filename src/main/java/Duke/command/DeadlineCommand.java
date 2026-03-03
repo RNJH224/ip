@@ -12,12 +12,22 @@ import java.time.format.DateTimeParseException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Represents a command that creates a new Deadline task.
+ * Expected input format:
+ * deadline <description> by <date>
+ */
 public class DeadlineCommand extends Command {
     private final String description;
     private final String by;
 
 
-
+    /**
+     * Constructs a DeadlineCommand by parsing the user input arguments.
+     *
+     * @param args The full argument string after the "deadline" keyword.
+     * @throws IOException If the description or deadline is missing.
+     */
     public DeadlineCommand(String args) throws IOException {
         if (args.isEmpty()) {
             throw new IOException("The description of a deadline cannot be empty.");
@@ -32,6 +42,10 @@ public class DeadlineCommand extends Command {
         this.by = parts[1].trim();
     }
 
+    /**
+     * Creates the Deadline task, adds it to the task list,
+     * and saves the updated list to storage.
+     */
     @Override
     public void execute(Tasklist tasks, Ui ui, Storage storage) throws IOException {
         Task t = new Deadline(description, by);

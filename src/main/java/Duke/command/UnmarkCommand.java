@@ -9,6 +9,11 @@ import Duke.ui.Ui;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Represents a command that marks a task as not completed.
+ * Expected input format:
+ * unmark <task_number>
+ */
 public class UnmarkCommand extends Command {
     private final int index; // 0-based
 

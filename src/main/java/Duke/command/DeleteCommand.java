@@ -9,6 +9,11 @@ import Duke.ui.Ui;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Represents a command that deletes a task from the task list.
+ * Expected input format:
+ * delete <task_number>
+ */
 public class DeleteCommand extends Command {
     private final int index; // 0-based
 

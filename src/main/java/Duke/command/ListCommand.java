@@ -5,6 +5,9 @@ import Duke.task.Task;
 import Duke.tasklist.Tasklist;
 import Duke.ui.Ui;
 
+/**
+ * Represents a command that lists all tasks.
+ */
 public class ListCommand extends Command {
     @Override
     public void execute(Tasklist tasks, Ui ui, Storage storage) {
