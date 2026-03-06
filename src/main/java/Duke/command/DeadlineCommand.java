@@ -33,7 +33,7 @@ public class DeadlineCommand extends Command {
             throw new IOException("The description of a deadline cannot be empty.");
         }
 
-        String[] parts = args.split("by", 2);
+        String[] parts = args.split("/by", 2);
         if (parts.length < 2) {
             throw new IOException("Deadline must have a by time.");
         }
