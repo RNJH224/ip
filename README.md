@@ -6,7 +6,7 @@
  |_| \_|\___/|_| \_|\___|\___|_|\_\
 ```
 # Welcome to NoNeck
-##
+
 ## Here are some basic Functions
  ### list - Lists all the current task in  your file
  ### delete (insert number) - delete the task inside the list depending on what number you input
